@@ -1,0 +1,52 @@
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class TokenSetFactory {
+
+    public static final Map<String, Operation> STANDARD_TOKEN_SET = createStandardTokenSet();
+    public static final Map<String, Operation> ENGLISH_TOKEN_SET = createEnglishTokenSet();
+    public static final Map<String, Operation> POLISH_TOKEN_SET = createPolishTokenSet();
+    public static final Map<String, Operation> ANNOYING_TOKEN_SET = createAnnoyingTokenSet();
+
+    private static Map<String, Operation> createStandardTokenSet() {
+        Map<String, Operation> tokenSet = new HashMap<>();
+        tokenSet.put("+", BigDecimal::add);
+        tokenSet.put("-", BigDecimal::subtract);
+        tokenSet.put("*", BigDecimal::multiply);
+        tokenSet.put("/", (a, b) -> a.divide(b, BigDecimal.ROUND_HALF_UP));
+        tokenSet.put("^", (a, b) -> a.pow(b.intValue()));
+        return Collections.unmodifiableMap(tokenSet);
+    }
+
+    private static Map<String, Operation> createEnglishTokenSet() {
+        Map<String, Operation> tokenSet = new HashMap<>();
+        tokenSet.put("add", BigDecimal::add);
+        tokenSet.put("sub", BigDecimal::subtract);
+        tokenSet.put("mul", BigDecimal::multiply);
+        tokenSet.put("div", (a, b) -> a.divide(b, BigDecimal.ROUND_HALF_UP));
+        tokenSet.put("pow", (a, b) -> a.pow(b.intValue()));
+        return Collections.unmodifiableMap(tokenSet);
+    }
+
+    private static Map<String, Operation> createPolishTokenSet() {
+        Map<String, Operation> tokenSet = new HashMap<>();
+        tokenSet.put("dodawanie", BigDecimal::add);
+        tokenSet.put("odejmowanie", BigDecimal::subtract);
+        tokenSet.put("mnozenie", BigDecimal::multiply);
+        tokenSet.put("dzielenie", (a, b) -> a.divide(b, BigDecimal.ROUND_HALF_UP));
+        tokenSet.put("potegowanie", (a, b) -> a.pow(b.intValue()));
+        return Collections.unmodifiableMap(tokenSet);
+    }
+
+    private static Map<String, Operation> createAnnoyingTokenSet() {
+        Map<String, Operation> tokenSet = new HashMap<>();
+        tokenSet.put("/", BigDecimal::add);             // '/' represents addition
+        tokenSet.put("^", BigDecimal::subtract);        // '^' represents subtraction
+        tokenSet.put("+", BigDecimal::multiply);        // '+' represents multiplication
+        tokenSet.put("-", (a, b) -> a.divide(b, BigDecimal.ROUND_HALF_UP)); // '-' represents division
+        tokenSet.put("*", (a, b) -> a.pow(b.intValue())); // '*' represents power
+        return Collections.unmodifiableMap(tokenSet);
+    }
+}
